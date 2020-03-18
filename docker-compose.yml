@@ -1,0 +1,24 @@
+version: "2.1"
+services:
+  rabbitmq:
+    image: rabbitmq:3.8-rc-management
+    ports:
+      - "5672:5672"
+      - "15671:15671"
+      - "15672:15672"
+    env_file:
+      - .env
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+    hostname: rabbitmq
+
+  mongo:
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - 27017:27017
+    volumes:
+      - $HOME/docker/volumes/mongo:/data/db
