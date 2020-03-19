@@ -35,6 +35,7 @@ var DB = struct {
 	UserName               string
 	Password               string
 	DBName                 string
+	Collection             string
 	ConnectionString       string
 	Driver                 string
 	NumOfConnectionRetries int
@@ -66,7 +67,7 @@ func init() {
 	DB.UserName = getOptionalEnv("MONGO_USERNAME", "admin")
 	DB.Password = getOptionalEnv("MONGO_PASSWORD", "admin")
 	DB.DBName = getOptionalEnv("ORDER_DATABASE", "order-service")
+	DB.Collection = getOptionalEnv("ORDER_COLLECTION", "orders")
 
-	DB.Driver = "postgres"
 	DB.ConnectionString = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", DB.UserName, DB.Password, DB.Host, DB.Port, DB.DBName)
 }

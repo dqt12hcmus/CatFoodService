@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package go.micro.service.order;
+
+import "google/protobuf/timestamp.proto";
+
+service Order {
+	rpc Call(Request) returns (Response) {}
+	rpc Stream(StreamingRequest) returns (stream StreamingResponse) {}
+	rpc PingPong(stream Ping) returns (stream Pong) {}
+	rpc AddOrder (OrderRequest) returns (OrderResponse);
+}
+
+message Message {
+	string say = 1;
+}
+
+message Request {
+	string name = 1;
+}
+
+message Response {
+	string msg = 1;
+}
+
+message StreamingRequest {
+	int64 count = 1;
+}
+
+message StreamingResponse {
+	int64 count = 1;
+}
+
+message Ping {
+	int64 stroke = 1;
+}
+
+message Pong {
+	int64 stroke = 1;
+}
+
+message OrderRequest {
+    string item = 1;
+    int32 quantity = 2;
+}
+
+message OrderResponse {
+    string id = 1;
+    string item = 2;
+    int32 quantity = 3;
+    google.protobuf.Timestamp created_at = 4;
+}
