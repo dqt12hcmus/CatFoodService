@@ -64,9 +64,9 @@ func init() {
 	Env = getOptionalEnv("ENV", DevEnt)
 	DB.Host = getOptionalEnv("MONGO_HOST", "localhost")
 	DB.Port = getOptionalEnv("MONGO_PORT", "5432")
-	DB.UserName = getOptionalEnv("MONGO_USERNAME", "admin")
-	DB.Password = getOptionalEnv("MONGO_PASSWORD", "admin")
-	DB.DBName = getOptionalEnv("ORDER_DATABASE", "order-service")
+	DB.UserName = getOptionalEnv("ORDER_USERNAME", "admin")
+	DB.Password = getOptionalEnv("ORDER_PASSWORD", "admin")
+	DB.DBName = getOptionalEnv("ORDER_DATABASE", "orders")
 	DB.Collection = getOptionalEnv("ORDER_COLLECTION", "orders")
 
 	DB.ConnectionString = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", DB.UserName, DB.Password, DB.Host, DB.Port, DB.DBName)

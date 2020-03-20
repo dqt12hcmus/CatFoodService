@@ -6,19 +6,18 @@ services:
       - "5672:5672"
       - "15671:15671"
       - "15672:15672"
-    env_file:
-      - .env
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
     hostname: rabbitmq
 
   mongo:
-    image: mongo:latest
+    image: mongo:3.5.10
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     ports:
       - 27017:27017
     volumes:
-      - $HOME/docker/volumes/mongo:/data/db
+      #- $HOME/docker/volumes/mongo:/data/db
+      - ./script/init.js:/docker-entrypoint-initdb.d/init.js
