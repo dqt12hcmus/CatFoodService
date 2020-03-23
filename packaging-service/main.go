@@ -2,6 +2,7 @@ package main
 
 import (
 	"packaging-service/handler"
+	"packaging-service/service"
 	"packaging-service/subscriber"
 
 	"github.com/micro/go-micro/v2"
@@ -13,22 +14,30 @@ import (
 
 func main() {
 	// New Service
-	service := micro.NewService(
+	mservice := micro.NewService(
 		micro.Name("go.micro.service.packaging"),
 		micro.Version("latest"),
 	)
 
 	// Initialise service
-	service.Init()
+	mservice.Init()
 
 	// Register Handler
-	packaging.RegisterPackagingHandler(service.Server(), new(handler.Packaging))
+	packaging.RegisterPackagingHandler(mservice.Server(), new(handler.Packaging))
+
+	// Create publisher
+	pub := micro.NewPublisher("packaged-order", mservice.Client())
 
 	// Register Struct as Subscriber
-	micro.RegisterSubscriber("new-order", service.Server(), new(subscriber.Packaging), server.SubscriberQueue("new_order_queue"))
+	packageService := service.CreatePackageService()
+	sub := subscriber.Packaging{
+		PackageService: packageService,
+		Publisher:      pub,
+	}
+	micro.RegisterSubscriber("packaged-order", mservice.Server(), sub, server.SubscriberQueue("packaged_order_queue"))
 
 	// Run service
-	if err := service.Run(); err != nil {
+	if err := mservice.Run(); err != nil {
 		log.Fatal(err)
 	}
 }

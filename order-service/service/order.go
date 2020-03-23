@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"order-service/config"
 	"order-service/model"
@@ -27,6 +28,7 @@ func CreateOrderService() *OrderService {
 func (os *OrderService) ProcessOrder(publisher micro.Publisher, db *mongo.Database, order *model.Order) (err error) {
 	fmt.Println("Process order ....")
 	var result *mongo.InsertOneResult
+	var byteOrder []byte
 
 	// Save to database
 	collection := db.Collection(config.DB.Collection)
@@ -38,8 +40,12 @@ func (os *OrderService) ProcessOrder(publisher micro.Publisher, db *mongo.Databa
 	order.ID = objectID.String()
 
 	// Publish to packaging service
+	byteOrder, err = json.Marshal(order)
+	if err != nil {
+		return
+	}
 	ev := &orderproto.Message{
-		Say: objectID.String(),
+		Say: string(byteOrder),
 	}
 	if err := publisher.Publish(context.Background(), ev); err != nil {
 		log.Logf("error publishing: %v", err)
