@@ -32,15 +32,18 @@ func main() {
 		micro.Version("latest"),
 	)
 
-	// Initialise service
+	// Initialize service
 	mservice.Init()
 
-	// Register Handler
+	// Create publisher
+	pub := micro.NewPublisher("new-order", mservice.Client())
 
+	// Register Handler
 	orderService := &service.OrderService{}
 	handler := &handler.Order{
 		OrderService: orderService,
 		DB:           database,
+		Publisher:    pub,
 	}
 	order.RegisterOrderHandler(mservice.Server(), handler)
 

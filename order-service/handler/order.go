@@ -9,11 +9,14 @@ import (
 	"order-service/model"
 	order "order-service/proto/order"
 	"order-service/service"
+
+	"github.com/micro/go-micro/v2"
 )
 
 type Order struct {
 	OrderService *service.OrderService
 	DB           *mongo.Database
+	Publisher    micro.Publisher
 }
 
 // Call is a single request handler called via client.Call or the generated client code
@@ -59,7 +62,7 @@ func (e *Order) AddOrder(ctx context.Context, req *order.OrderRequest, rsp *orde
 		Item:     req.Item,
 		Quantity: int(req.Quantity),
 	}
-	err := e.OrderService.ProcessOrder(e.DB, order)
+	err := e.OrderService.ProcessOrder(e.Publisher, e.DB, order)
 	if err != nil {
 		return err
 	}
