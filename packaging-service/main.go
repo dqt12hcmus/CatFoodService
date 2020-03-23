@@ -1,15 +1,15 @@
 package main
 
 import (
+	"log"
+
 	"packaging-service/handler"
+	packaging "packaging-service/proto/packaging"
 	"packaging-service/service"
 	"packaging-service/subscriber"
 
 	"github.com/micro/go-micro/v2"
-	log "github.com/micro/go-micro/v2/logger"
 	"github.com/micro/go-micro/v2/server"
-
-	packaging "packaging-service/proto/packaging"
 )
 
 func main() {
@@ -30,11 +30,11 @@ func main() {
 
 	// Register Struct as Subscriber
 	packageService := service.CreatePackageService()
-	sub := subscriber.Packaging{
+	sub := &subscriber.Packaging{
 		PackageService: packageService,
 		Publisher:      pub,
 	}
-	micro.RegisterSubscriber("packaged-order", mservice.Server(), sub, server.SubscriberQueue("packaged_order_queue"))
+	micro.RegisterSubscriber("new-order", mservice.Server(), sub, server.SubscriberQueue("new_order_queue"))
 
 	// Run service
 	if err := mservice.Run(); err != nil {
